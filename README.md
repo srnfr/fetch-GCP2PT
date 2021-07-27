@@ -1,2 +1,2 @@
 # fetch-GCP2PT
-Fetch logs for Google Worskpaces and send to syslog
+Fetch logs from Google Worskpaces Audit and send them to custom syslog
