@@ -21,6 +21,18 @@ if [ -z ${organization+x} ]; then die echo "Exiting: var organization is unset";
 if [ -z ${syslogsrv+x} ]; then die echo "Exiting: var syslogsrv is unset"; exit 1; else [ $debug == 1 ] && echo "syslogsrv is set to '$syslogsrv'"; fi
 if [ -z ${syslogport+x} ]; then die echo "Exiting: var syslogport is unset"; exit 1; else [ $debug == 1 ] && echo "syslogport is set to '$syslogport'"; fi
 
+# test ig gcloud is working
+if [ ! $(gcloud auth list --format=json | jq -r ".[].status") == "ACTIVE" ] ; then
+	echo "Gcloud not working. Fix it first !"
+	exit 1;
+fi
+
+# test if "jq" installed
+if ! command -v jq &> /dev/null
+then
+    echo "jq could not be found. Please install it."
+    exit
+fi
 
 # create dir if not exists
 mkdir -p "$iddir"
