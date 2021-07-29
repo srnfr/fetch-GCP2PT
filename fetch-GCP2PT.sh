@@ -28,7 +28,7 @@ if [ ! $(gcloud auth list --format=json | jq -r ".[].status") == "ACTIVE" ] ; th
 fi
 
 # test if "jq" installed
-if ! command -v jq &> /dev/null
+if ! which jq &> /dev/null
 then
     echo "jq could not be found. Please install it."
     exit
