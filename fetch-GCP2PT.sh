@@ -1,10 +1,14 @@
 #!/bin/bash
-# ver=0.8
+ver="0.91"
 # author=srn
 
 #-------
 debug=1
 iddir="$HOME/insertid"  ## default storage dir
+
+[ $debug == 1 ] && echo "------- Version: $ver ---"
+[ $debug == 1 ] && echo "-------"
+
 if [ ! -f "$HOME"/fetch-GCP2PT.conf ]; then 
 	echo "$HOME/fetch-GCP2PT.conf non-existant!"
       	printf "Create a key=value pair config file with the following keys :\n"
