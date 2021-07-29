@@ -3,7 +3,7 @@
 # author=srn
 
 #-------
-debug=0
+debug=1
 iddir="$HOME/insertid"  ## default storage dir
 if [ ! -f "$HOME"/fetch-GCP2PT.conf ]; then 
 	echo "$HOME/fetch-GCP2PT.conf non-existant!"
@@ -12,8 +12,19 @@ if [ ! -f "$HOME"/fetch-GCP2PT.conf ]; then
 	printf "Exiting..\n"
 	exit 1
 fi
-source "$HOME/fetch-GCP2PT.conf" 
+##source "$HOME/fetch-GCP2PT.conf" 
+. "$HOME/fetch-GCP2PT.conf" 
 #------
+
+# test if "jq" installed
+if ! which jq &> /dev/null
+then
+    echo "jq could not be found. Please install it."
+    exit
+fi
+[ $debug == 1 ] && jq --version
+[ $debug == 1 ] && echo "-------"
+
 
 # config test
 if [ -z ${fresh+x} ]; then echo "Exiting: var fresh is unset" ; exit 1; else [ $debug == 1 ] &&  echo "fresh is set to '$fresh'"; fi
@@ -21,17 +32,14 @@ if [ -z ${organization+x} ]; then die echo "Exiting: var organization is unset";
 if [ -z ${syslogsrv+x} ]; then die echo "Exiting: var syslogsrv is unset"; exit 1; else [ $debug == 1 ] && echo "syslogsrv is set to '$syslogsrv'"; fi
 if [ -z ${syslogport+x} ]; then die echo "Exiting: var syslogport is unset"; exit 1; else [ $debug == 1 ] && echo "syslogport is set to '$syslogport'"; fi
 
-# test ig gcloud is working
+# test if gcloud is working
+[ $debug == 1 ] && echo "-------"
+[ $debug == 1 ] && gcloud --version
+[ $debug == 1 ] && echo "-------"
+[ $debug == 1 ] && gcloud auth list
 if [ ! $(gcloud auth list --format=json | jq -r ".[].status") == "ACTIVE" ] ; then
 	echo "Gcloud not working. Fix it first !"
 	exit 1;
-fi
-
-# test if "jq" installed
-if ! which jq &> /dev/null
-then
-    echo "jq could not be found. Please install it."
-    exit
 fi
 
 # create dir if not exists
