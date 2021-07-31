@@ -55,11 +55,17 @@ gcloud logging read "resource.type=\"audited_resource\"" --organization="$organi
 if jq empty "$iddir"/gcp.log; then
   [ $debug == 1 ] &&  echo "JSON from GCP is valid"
 else
-  echo "JSON from GCP is invalid"
+  echo "JSON from GCP is invalid, exiting..."
   exit
 fi
 
-jq -Mc "$iddir"/gcp.log > "$iddir"/logGCP.json.lst
+[ $debug == 1 ] &&  echo "Now parsing the logs bulk... "
+if [ -s "$iddir"/gcp.log ]; then
+	cat "$iddir"/gcp.log | jq -Mc > "$iddir"/logGCP.json.lst
+else
+	[ $debug == 1 ] && echo "Bulk log file exmpty. Now exiting"
+	exit
+fi
 
 # parsing the logs
 i=0
@@ -75,6 +81,7 @@ for f in $( jq -r '.[].insertId' "$iddir"/logGCP.json.lst) ; do
         fi
 	[ $debug == 1 ] && echo "------------------"
 done
+[ $debug == 1 ] && echo "Parsing done."
 
 # sending only the new logs
 shopt -s nullglob
