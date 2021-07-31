@@ -49,8 +49,17 @@ fi
 # create dir if not exists
 mkdir -p "$iddir"
 
-# fetching logs form GCP
-gcloud logging read "resource.type=\"audited_resource\"" --organization="$organization" --freshness="$fresh" --format json | jq -Mc > "$iddir"/logGCP.json.lst
+# fetching logs form GCP dans testing valid
+gcloud logging read "resource.type=\"audited_resource\"" --organization="$organization" --freshness="$fresh" --format json > "$iddir"/gcp.log
+
+if jq empty "$iddir"/gcp.log; then
+  [ $debug == 1 ] &&  echo "JSON from GCP is valid"
+else
+  echo "JSON from GCP is invalid"
+  exit
+fi
+
+jq -Mc "$iddir"/gcp.log > "$iddir"/logGCP.json.lst
 
 # parsing the logs
 i=0
