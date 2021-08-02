@@ -1,5 +1,5 @@
 #!/bin/bash
-ver="0.97"
+ver="0.98"
 # author=srn
 
 #-------
