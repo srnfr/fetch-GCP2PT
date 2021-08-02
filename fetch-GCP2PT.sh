@@ -1,5 +1,5 @@
 #!/bin/bash
-ver="0.96"
+ver="0.97"
 # author=srn
 
 #-------
@@ -50,6 +50,9 @@ else
         [ $debug == 1 ] &&  echo "gcloud seems ok."
 fi
 
+# check nc
+[ $debug == 1 ] &&  netcat -v
+
 # create dir if not exists
 mkdir -p "$iddir"
 [ $debug == 1 ] &&  echo "iddir = $iddir"
@@ -78,7 +81,7 @@ for f in $( jq -r '.[].insertId' "$iddir"/logGCP.json.lst) ; do
 	i=$((i+1))
         [ $debug == 1 ] && printf "%s:\n  Id fetched: $f" $i;
         if [ ! -f "$iddir/$f.json.old" ] ; then
-                ## nouveau, n a pas deja ete envoye
+                ## new, has not yet been sent
                 [ $debug == 1 ] && echo "  $iddir/$f.json.old not found => $f is a new InsertID!"
                 jq -cM ".[] | select (.insertId==\"$f\")" "$iddir"/logGCP.json.lst > "$iddir"/"$f".json
         else
