@@ -1,5 +1,5 @@
 #!/bin/bash
-ver="0.93"
+ver="0.94"
 # author=srn
 
 #-------
@@ -28,6 +28,8 @@ then
 fi
 [ $debug == 1 ] && jq --version
 [ $debug == 1 ] && echo "-------"
+[ $debug == 1 ] && uname -a 
+[ $debug == 1 ] && echo "-------"
 
 
 # config file test
@@ -48,6 +50,7 @@ fi
 
 # create dir if not exists
 mkdir -p "$iddir"
+[ $debug == 1 ] &&  echo "iddir = $iddir"
 
 # fetching logs from GCP and testing JSON validity
 gcloud logging read "resource.type=\"audited_resource\"" --organization="$organization" --freshness="$fresh" --format json > "$iddir"/gcp.log
@@ -59,7 +62,7 @@ else
   exit
 fi
 
-[ $debug == 1 ] &&  echo "Now parsing the logs bulk... "
+[ $debug == 1 ] &&  echo "Now parsing the logs bulk ("$iddir"/gcp.log)... "
 if [ -s "$iddir"/gcp.log ]; then
 	cat "$iddir"/gcp.log | jq -Mc > "$iddir"/logGCP.json.lst
 else
