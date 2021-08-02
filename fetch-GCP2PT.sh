@@ -30,13 +30,13 @@ fi
 [ $debug == 1 ] && echo "-------"
 
 
-# config test
+# config file test
 if [ -z ${fresh+x} ]; then echo "Exiting: var fresh is unset" ; exit 1; else [ $debug == 1 ] &&  echo "fresh is set to '$fresh'"; fi
 if [ -z ${organization+x} ]; then die echo "Exiting: var organization is unset";  exit 1; else [ $debug == 1 ] && echo "organization is set to '$organization'"; fi
 if [ -z ${syslogsrv+x} ]; then die echo "Exiting: var syslogsrv is unset"; exit 1; else [ $debug == 1 ] && echo "syslogsrv is set to '$syslogsrv'"; fi
 if [ -z ${syslogport+x} ]; then die echo "Exiting: var syslogport is unset"; exit 1; else [ $debug == 1 ] && echo "syslogport is set to '$syslogport'"; fi
 
-# test if gcloud is working
+# test if gcloud is working and authenticated
 [ $debug == 1 ] && echo "-------"
 [ $debug == 1 ] && gcloud --version
 [ $debug == 1 ] && echo "-------"
@@ -49,7 +49,7 @@ fi
 # create dir if not exists
 mkdir -p "$iddir"
 
-# fetching logs form GCP dans testing valid
+# fetching logs from GCP and testing JSON validity
 gcloud logging read "resource.type=\"audited_resource\"" --organization="$organization" --freshness="$fresh" --format json > "$iddir"/gcp.log
 
 if jq empty "$iddir"/gcp.log; then
@@ -83,7 +83,7 @@ for f in $( jq -r '.[].insertId' "$iddir"/logGCP.json.lst) ; do
 done
 [ $debug == 1 ] && echo "Parsing done."
 
-# sending only the new logs
+# Sending only the new logs
 shopt -s nullglob
 i=0
 for full in "$iddir"/*.json; do
@@ -99,5 +99,5 @@ for full in "$iddir"/*.json; do
 	[ $debug == 1 ] && echo "------------------"
 done
 
-##Nettoyage des fichiers .old de +5 jours
+# Delete older than +5 days files
 find "$iddir" -type f -name "*.json.old" -mtime +5 -exec rm {} \;
