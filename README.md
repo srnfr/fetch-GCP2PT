@@ -2,8 +2,9 @@
 
 Fetch logs from Google Worskpaces Audit and send them to a custom syslog server.
 The script includes a logic not to send previously sent logs.
+This scipt is aimed at being run with cron.
 
-Requirements : You need a working "gcloud" and "jq"
+Requirements : You need "jq" and a working (i.e authenticated) "gcloud"
 
 
 You must create a config file named "fetch-GCP2PT.conf" located in your $HOME dir with the following content (to be customized) :
