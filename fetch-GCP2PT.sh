@@ -1,5 +1,5 @@
 #!/bin/bash
-ver="0.95"
+ver="0.96"
 # author=srn
 
 #-------
@@ -46,6 +46,8 @@ if [ -z ${syslogport+x} ]; then die echo "Exiting: var syslogport is unset"; exi
 if [ ! $(gcloud auth list --format=json | jq -r ".[].status") == "ACTIVE" ] ; then
 	echo "Gcloud not working. Fix it first !"
 	exit 1;
+else
+        [ $debug == 1 ] &&  echo "gcloud seems ok."
 fi
 
 # create dir if not exists
