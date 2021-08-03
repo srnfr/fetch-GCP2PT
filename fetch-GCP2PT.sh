@@ -52,7 +52,9 @@ fi
 
 # check ncat
 [ $debug == 1 ] &&  ncat --version
-if [ ! $(ncat --version) ]; then
+ncat --version > /dev/null 2>&1
+retval=$?
+if [ ! $retval == 0 ]; then
 	echo "ncat not working. Exiting."
 	exit
 fi
