@@ -1,5 +1,5 @@
 #!/bin/bash
-ver="0.98e"
+ver="0.98f"
 # author=srn
 
 #-------
@@ -67,6 +67,8 @@ mkdir -p "$iddir"
 # fetching logs from GCP and testing JSON validity
 gcloud logging read "resource.type=\"audited_resource\"" --organization="$organization" --freshness="$fresh" --format json > "$iddir"/gcp.log
 
+[ $debug == 1 ] && ls -lh "$iddir"/gcp.log
+
 if jq empty "$iddir"/gcp.log; then
   [ $debug == 1 ] &&  echo "JSON from GCP is valid"
 else
@@ -74,10 +76,10 @@ else
   exit
 fi
 
+[ $debug == 1 ] && ls -lh "$iddir"/logGCP.json.lst
 [ $debug == 1 ] &&  echo "Now parsing the logs bulk ("$iddir"/gcp.log)... "
 if [ -s "$iddir"/gcp.log ]; then
-	cat "$iddir"/gcp.log | jq -Mc > "$iddir"/logGCP.json.lst
-        [ $debug == 1 ] && ls -lh "$iddir"/logGCP.json.lst
+	cat "$iddir"/gcp.log | jq -Mcl "." > "$iddir"/logGCP.json.lst
 else
 	[ $debug == 1 ] && echo "Bulk log file exmpty. Now exiting"
 	exit
