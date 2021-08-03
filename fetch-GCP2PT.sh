@@ -50,8 +50,13 @@ else
         [ $debug == 1 ] &&  echo "gcloud seems ok."
 fi
 
-# check nc
-[ $debug == 1 ] &&  netcat -v
+# check ncat
+[ $debug == 1 ] &&  ncat --version
+if [ ! $(ncat2 --version) ]; then
+	echo "ncat not working. Exiting."
+	exit
+fi
+
 
 # create dir if not exists
 mkdir -p "$iddir"
