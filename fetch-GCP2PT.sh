@@ -76,7 +76,8 @@ fi
 
 [ $debug == 1 ] &&  echo "Now parsing the logs bulk ("$iddir"/gcp.log)... "
 if [ -s "$iddir"/gcp.log ]; then
-	cat "$iddir"/gcp.log | jq -Mc empty > "$iddir"/logGCP.json.lst
+	cat "$iddir"/gcp.log | jq -Mc > "$iddir"/logGCP.json.lst
+        [ $debug == 1 ] && ls -lh "$iddir"/logGCP.json.lst
 else
 	[ $debug == 1 ] && echo "Bulk log file exmpty. Now exiting"
 	exit
