@@ -1,5 +1,5 @@
 #!/bin/bash
-ver="0.98d"
+ver="0.98e"
 # author=srn
 
 #-------
@@ -106,6 +106,11 @@ for full in "$iddir"/*.json; do
         [ $debug == 1 ] &&  printf "%s:\n  Selecting f = $full" $i
         [ $debug == 1 ] && echo -n "  Sending $full to papertrail...."
         ncat --ssl "$syslogsrv" "$syslogport" < "$full"
+	retval=$?
+	if [ ! $retval == 0 ]; then
+		echo "ncat failed to send. Exiting now."
+		exit
+	fi
         [ $debug == 1 ] && echo "done."
         filename=$(basename "$full")
         [ $debug == 1 ] && echo "  New target filename $filename"
