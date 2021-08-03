@@ -1,5 +1,5 @@
 #!/bin/bash
-ver="0.98"
+ver="0.98c"
 # author=srn
 
 #-------
@@ -52,7 +52,7 @@ fi
 
 # check ncat
 [ $debug == 1 ] &&  ncat --version
-if [ ! $(ncat2 --version) ]; then
+if [ ! $(ncat --version) ]; then
 	echo "ncat not working. Exiting."
 	exit
 fi
