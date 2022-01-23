@@ -6,11 +6,14 @@ ver="0.98f"
 debug=1
 iddir="$HOME/insertid"  ## default storage dir
 
+gcloud="/root/google-cloud-sdk/bin/gcloud"
+
+
 [ $debug == 1 ] && echo "------- Version: $ver ---"
 [ $debug == 1 ] && echo "-------"
 
 if [ ! -f "$HOME"/fetch-GCP2PT.conf ]; then 
-	echo "$HOME/fetch-GCP2PT.conf non-existant!"
+	echo "$HOME/fetch-GCP2PT.conf non-existent!"
       	printf "Create a key=value pair config file with the following keys :\n"
 	printf " fresh,\n organization,\n syslogsrv,\n syslogport.\n" 
 	printf "Exiting..\n"
@@ -39,11 +42,17 @@ if [ -z ${syslogsrv+x} ]; then die echo "Exiting: var syslogsrv is unset"; exit 
 if [ -z ${syslogport+x} ]; then die echo "Exiting: var syslogport is unset"; exit 1; else [ $debug == 1 ] && echo "syslogport is set to '$syslogport'"; fi
 
 # test if gcloud is working and authenticated
+if ! $gcloud version > /dev/null
+then
+    echo "gcloud could not be found. Please install it."
+    exit
+fi
+
 [ $debug == 1 ] && echo "-------"
-[ $debug == 1 ] && gcloud --version
+[ $debug == 1 ] && $gcloud --version
 [ $debug == 1 ] && echo "-------"
-[ $debug == 1 ] && gcloud auth list
-if [ ! $(gcloud auth list --format=json | jq -r ".[].status") == "ACTIVE" ] ; then
+[ $debug == 1 ] && $gcloud auth list
+if [ ! $($gcloud auth list --format=json | jq -r ".[].status") == "ACTIVE" ] ; then
 	echo "Gcloud not working. Fix it first !"
 	exit 1;
 else
@@ -65,7 +74,7 @@ mkdir -p "$iddir"
 [ $debug == 1 ] &&  echo "iddir = $iddir"
 
 # fetching logs from GCP and testing JSON validity
-gcloud logging read "resource.type=\"audited_resource\"" --organization="$organization" --freshness="$fresh" --format json > "$iddir"/gcp.log
+$gcloud logging read "resource.type=\"audited_resource\"" --organization="$organization" --freshness="$fresh" --format json > "$iddir"/gcp.log
 
 [ $debug == 1 ] && ls -lh "$iddir"/gcp.log
 
