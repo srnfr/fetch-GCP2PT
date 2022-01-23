@@ -1,9 +1,9 @@
 #!/bin/bash
-ver="0.98f"
+ver="0.99a"
 # author=srn
 
 #-------
-debug=1
+debug=0
 iddir="$HOME/insertid"  ## default storage dir
 
 gcloud="/root/google-cloud-sdk/bin/gcloud"
